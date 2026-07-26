@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Outer Shadow Effect -->
+  <rect x="15" y="15" width="482" height="482" rx="90" ry="90" fill="#150a07" opacity="0.5" filter="blur(10px)" />
+  
+  <!-- Main Rounded Square Background (Deep mahogany / rich wood color) -->
+  <rect x="10" y="10" width="492" height="492" rx="100" ry="100" fill="#2c1a14" stroke="#f1c40f" stroke-width="14" />
+  
+  <!-- Beautiful Checkerboard Grid backdrop -->
+  <g opacity="0.12">
+    <!-- Row 1 -->
+    <rect x="71" y="71" width="92" height="92" fill="#ffffff" />
+    <rect x="255" y="71" width="92" height="92" fill="#ffffff" />
+    <rect x="439" y="71" width="2" height="92" fill="#ffffff" />
+    <!-- Row 2 -->
+    <rect x="163" y="163" width="92" height="92" fill="#ffffff" />
+    <rect x="347" y="163" width="92" height="92" fill="#ffffff" />
+    <!-- Row 3 -->
+    <rect x="71" y="255" width="92" height="92" fill="#ffffff" />
+    <rect x="255" y="255" width="92" height="92" fill="#ffffff" />
+    <!-- Row 4 -->
+    <rect x="163" y="347" width="92" height="92" fill="#ffffff" />
+    <rect x="347" y="347" width="92" height="92" fill="#ffffff" />
+  </g>
+  
+  <!-- Inner Border Line for premium look -->
+  <rect x="24" y="24" width="464" height="464" rx="86" ry="86" fill="none" stroke="#e67e22" stroke-width="3" opacity="0.7" />
+
+  <!-- The Checker Piece: Red Draft Piece -->
+  <!-- Outer Rim / Piece Shadow -->
+  <circle cx="256" cy="246" r="125" fill="#150a07" opacity="0.4" />
+  <!-- Main Checker Body (Rich Crimson/Red) -->
+  <circle cx="256" cy="240" r="120" fill="#c0392b" stroke="#e74c3c" stroke-width="8" />
+  <!-- Ridges on the Checker Piece (Concentric circles) -->
+  <circle cx="256" cy="240" r="95" fill="none" stroke="#962d22" stroke-width="6" />
+  <circle cx="256" cy="240" r="70" fill="none" stroke="#e74c3c" stroke-width="4" />
+  <!-- Inner Center with a Star or crown emblem -->
+  <circle cx="256" cy="240" r="45" fill="#e74c3c" stroke="#962d22" stroke-width="2" />
+  
+  <!-- A gleaming Gold Crown on top of the checker, signifying King (Drafts) -->
+  <path d="M 196 140 L 216 185 L 256 155 L 296 185 L 316 140 L 300 200 L 212 200 Z" fill="#f1c40f" stroke="#f39c12" stroke-width="4" stroke-linejoin="round" />
+  <!-- Crown Jewels (Little circular pearls on points) -->
+  <circle cx="196" cy="140" r="8" fill="#ffffff" stroke="#f1c40f" stroke-width="2" />
+  <circle cx="256" cy="155" r="8" fill="#ffffff" stroke="#f1c40f" stroke-width="2" />
+  <circle cx="316" cy="140" r="8" fill="#ffffff" stroke="#f1c40f" stroke-width="2" />
+
+  <!-- Star Symbol inside checker piece -->
+  <polygon points="256,220 261,234 275,234 264,242 268,256 256,247 244,256 248,242 237,234 251,234" fill="#f1c40f" />
+
+  <!-- Elegant Green & White Ribbon/Band at the bottom, matching Nigerian flag colors -->
+  <g opacity="0.95">
+    <path d="M 60 395 C 120 380, 392 380, 452 395 L 432 445 C 372 430, 140 430, 80 445 Z" fill="#27ae60" />
+    <path d="M 180 388 C 210 384, 302 384, 332 388 L 322 438 C 292 434, 200 434, 190 438 Z" fill="#ffffff" />
+  </g>
+
+  <!-- Title Text: DRAFT in impact/luckiest guy style -->
+  <text x="256" y="425" font-family="'Luckiest Guy', 'Impact', sans-serif" font-size="44" fill="#f1c40f" font-weight="bold" text-anchor="middle" letter-spacing="3" stroke="#2c1a14" stroke-width="3">N-DRAFT</text>
+</svg>

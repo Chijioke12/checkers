@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KaiOS Checkers</title>
+    <script>
+      (function() {
+        // Detect if running on a KaiOS device, on a small screen, or if requested by query param
+        var isKaiOS = navigator.userAgent.toLowerCase().indexOf('kaios') !== -1;
+        var urlParams = new URLSearchParams(window.location.search);
+        var isPureDevice = urlParams.has('device') || urlParams.get('simulator') === 'false';
+        var isSmallScreen = window.innerWidth <= 260 || window.innerHeight <= 340;
+        
+        if (isKaiOS || isPureDevice || isSmallScreen) {
+          document.documentElement.className += ' device-only-mode';
+        }
+      })();
+    </script>
+    <script src="/lib/phaser-3.24.1.min.js"></script>
+    <style>
+      @font-face {
+        font-family: 'Baloo Chettan';
+        src: url('/BalooChettan-Regular.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Luckiest Guy';
+        src: url('/LuckiestGuy-Regular.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #121212;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: 'Baloo Chettan', system-ui, -apple-system, sans-serif;
+        color: white;
+      }
+      #app-root {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        padding: 20px;
+        background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png');
+        background-color: #2a1b15;
+        min-height: 100vh;
+      }
+      #root {
+        width: 240px;
+        height: 320px;
+        background: #4e342e;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        border: 8px solid #1a100c;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+      }
+      .controller {
+        background: #1a1a1a;
+        padding: 20px;
+        border-radius: 24px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        border: 2px solid #333;
+        width: 220px;
+      }
+      
+      .softkeys-row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        gap: 10px;
+      }
+      .softkey-btn {
+        flex: 1;
+        padding: 8px 4px;
+        background: #2a2a2a;
+        border: 2px solid #444;
+        border-radius: 8px;
+        color: #f1c40f;
+        font-family: 'Luckiest Guy', 'Baloo Chettan', sans-serif;
+        font-size: 11px;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.1s;
+        box-shadow: 0 3px 0 #000;
+        text-align: center;
+      }
+      .softkey-btn:active {
+        transform: translateY(3px);
+        box-shadow: none;
+        background: #333;
+      }
+
+      .d-pad {
+        display: grid;
+        grid-template-areas: 
+          ". up ."
+          "left ok right"
+          ". down .";
+        gap: 8px;
+        margin-top: 5px;
+      }
+      .btn {
+        width: 52px;
+        height: 52px;
+        background: #333;
+        border: 2px solid #444;
+        border-radius: 12px;
+        color: #fff;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.1s;
+        box-shadow: 0 4px 0 #000;
+      }
+      .btn:active {
+        transform: translateY(4px);
+        box-shadow: none;
+        background: #444;
+      }
+      .btn-ok {
+        grid-area: ok;
+        border-radius: 50%;
+        background: #c0392b;
+        border-color: #e74c3c;
+        font-weight: bold;
+        font-size: 14px;
+      }
+      .btn-up { grid-area: up; }
+      .btn-down { grid-area: down; }
+      .btn-left { grid-area: left; }
+      .btn-right { grid-area: right; }
+
+      /* Device-only mode style overrides */
+      .device-only-mode body {
+        background-color: #000 !important;
+        overflow: hidden !important;
+      }
+      .device-only-mode #app-root {
+        padding: 0 !important;
+        gap: 0 !important;
+        background: #000 !important;
+        background-image: none !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+      }
+      .device-only-mode #root {
+        width: 240px !important;
+        height: 320px !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+      }
+      .device-only-mode .controller {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app-root">
+      <div id="root"></div>
+      
+      <div class="controller">
+        <!-- Softkeys Bar corresponding to KaiOS display -->
+        <div class="softkeys-row">
+          <button class="softkey-btn" id="btn-lsk">BACK</button>
+          <button class="softkey-btn" id="btn-csk">SELECT</button>
+          <button class="softkey-btn" id="btn-rsk">UNDO</button>
+        </div>
+
+        <!-- Directional D-Pad -->
+        <div class="d-pad">
+          <button class="btn btn-up" id="btn-up">▲</button>
+          <button class="btn btn-left" id="btn-left">◀</button>
+          <button class="btn btn-ok" id="btn-ok">OK</button>
+          <button class="btn btn-right" id="btn-right">▶</button>
+          <button class="btn btn-down" id="btn-down">▼</button>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      function sendNav(direction) {
+        window.dispatchEvent(new CustomEvent('game-nav', { detail: { direction } }));
+      }
+      
+      document.getElementById('btn-up').onclick = () => sendNav('UP');
+      document.getElementById('btn-down').onclick = () => sendNav('DOWN');
+      document.getElementById('btn-left').onclick = () => sendNav('LEFT');
+      document.getElementById('btn-right').onclick = () => sendNav('RIGHT');
+      document.getElementById('btn-ok').onclick = () => sendNav('SELECT');
+      document.getElementById('btn-lsk').onclick = () => sendNav('LSK');
+      document.getElementById('btn-csk').onclick = () => sendNav('SELECT');
+      document.getElementById('btn-rsk').onclick = () => sendNav('RSK');
+
+      // Listen for softkey label updates from Phaser
+      window.addEventListener('update-softkeys', (e) => {
+        const { lsk, csk, rsk } = e.detail;
+        document.getElementById('btn-lsk').innerText = lsk || '—';
+        document.getElementById('btn-csk').innerText = csk || 'SELECT';
+        document.getElementById('btn-rsk').innerText = rsk || '—';
+      });
+
+      // Physical Keyboard bindings
+      window.addEventListener('keydown', (e) => {
+        const k = e.key.toLowerCase();
+        if (['arrowup', 'w'].includes(k)) { sendNav('UP'); e.preventDefault(); }
+        else if (['arrowdown', 's'].includes(k)) { sendNav('DOWN'); e.preventDefault(); }
+        else if (['arrowleft', 'a'].includes(k)) { sendNav('LEFT'); e.preventDefault(); }
+        else if (['arrowright', 'd'].includes(k)) { sendNav('RIGHT'); e.preventDefault(); }
+        else if (['enter', ' ', '5'].includes(k)) { sendNav('SELECT'); e.preventDefault(); }
+        else if (['softleft', 'f1', 'b'].includes(k)) { sendNav('LSK'); e.preventDefault(); }
+        else if (['softright', 'f2', 'u', 'z', 'backspace'].includes(k)) { sendNav('RSK'); e.preventDefault(); }
+        else if (['r'].includes(k)) { sendNav('RULES'); e.preventDefault(); }
+      });
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
