@@ -1,0 +1,6 @@
+{
+  "name": "KaiOS Checkers",
+  "description": "A high-performance Checkers game optimized for 240x320 KaiOS screens using Phaser 3.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
